@@ -28,31 +28,66 @@ const generateSquares = () => {
 const App = () => {
 
   const [squares, setSquares] = useState(generateSquares());
+  const [currentPlayer, setCurrentPlayer] = useState(PLAYER_1)
 
   // Wave 2
-  // You will need to create a method to change the square 
-  //   When it is clicked on.
-  //   Then pass it into the squares as a callback
-
-
-  const checkForWinner = () => {
-    // Complete in Wave 3
-
-  }
 
   const resetGame = () => {
-    // Complete in Wave 4
+    setSquares(generateSquares())
   }
+
+  const checkForWinner = (squares) => {
+      
+    if (squares[0][0].value === squares[0][1].value && squares[0][1].value === squares[0][2].value && squares[0][2].value !== ''){
+      return squares[0][0].value
+    } else if (squares[1][0].value === squares[1][1].value && squares[1][1].value === squares[1][2].value && squares[1][2].value !== ''){
+      return squares[1][0].value
+    } else if (squares[2][0].value === squares[2][1].value && squares[2][1].value === squares[2][2].value  && squares[2][2].value !== ''){
+      return squares[2][0].value
+    } else if (squares[0][0].value === squares[1][0].value && squares[1][0].value === squares[2][0].value && squares[2][0].value !== ''){
+      return squares[0][0].value
+    } else if (squares[0][1].value === squares[1][1].value && squares[1][1].value === squares[2][1].value  && squares[2][1].value !== ''){
+      return squares[0][1].value
+    } else if (squares[0][2].value === squares[1][2].value && squares[1][2].value === squares[2][2].value && squares[2][2].value !== ''){
+      return squares[0][2].value
+    } else if (squares[0][0].value === squares[1][1].value && squares[1][1].value === squares[2][2].value && squares[2][2].value !== ''){
+      return squares[0][0].value
+    } else if (squares[0][2].value === squares[1][1].value && squares[1][1].value === squares[2][0].value  && squares[2][0].value !== ''){
+      return squares[0][2].value
+    } else {
+      return false
+    }
+  }
+  
+
+  const updateSquare = (updatedSquare) => {
+    const updatedSquares = [[],[],[]]
+    squares.forEach((rows, i) => {
+      rows.forEach((square) => {
+        if (square.id === updatedSquare.id) {
+          updatedSquare.value = currentPlayer
+          updatedSquares[i].push(updatedSquare)
+        } else {
+          updatedSquares[i].push(square)
+        }
+      })
+    })
+    
+    currentPlayer === PLAYER_1 ? setCurrentPlayer(PLAYER_2) : setCurrentPlayer(PLAYER_1)
+    setSquares(updatedSquares)
+  }
+
+  
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>React Tic Tac Toe</h1>
-        <h2>The winner is ... -- Fill in for wave 3 </h2>
-        <button>Reset Game</button>
+        <h2>The winner is {checkForWinner(squares)}</h2>
+        <button onClick={resetGame}>Reset Game</button>
       </header>
       <main>
-        <Board squares={squares} />
+        <Board squares={squares} onClickCallback={updateSquare}/>
       </main>
     </div>
   );
